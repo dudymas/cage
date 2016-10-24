@@ -184,7 +184,7 @@ impl Project {
     pub fn from_example_and_random_id(name: &str, id: u16) -> Result<Project> {
         let root_dir = Path::new("examples").join(name);
         let rand_name = format!("{}-{}", name, id);
-        let test_output = Path::new("target/test_output").join(&rand_name);
+        let test_output = Path::new("target").join("test_output").join(&rand_name);
         Project::from_dirs(&root_dir, &test_output.join("src"), &test_output)
     }
 
@@ -508,9 +508,11 @@ fn new_from_example_uses_example_and_target() {
     let proj = Project::from_example("hello").unwrap();
     assert_eq!(proj.root_dir, Path::new("examples/hello"));
     let output_dir = proj.output_dir.to_str_or_err().unwrap();
-    assert!(output_dir.starts_with("target/test_output/hello-"));
+    assert!(output_dir.starts_with("target/test_output/hello-") ||
+            output_dir.starts_with("target\\test_output\\hello-"));
     let src_dir = proj.src_dir.to_str_or_err().unwrap();
-    assert!(src_dir.starts_with("target/test_output/hello-"));
+    assert!(src_dir.starts_with("target/test_output/hello-") ||
+            src_dir.starts_with("target\\test_output\\hello-"));
 }
 
 #[test]
